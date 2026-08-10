@@ -669,28 +669,24 @@ setTimeout(() => map.invalidateSize(), 100);
 setTimeout(() => map.invalidateSize(), 500);
 
 const allMarkers = [];
-function mkDot(isHotel) {
+function mkDot(isHotel, zoom) {
+  zoom = zoom || map.getZoom();
+  const scale = Math.pow(2, (zoom - 13) / 2.5);
+  const s = Math.max(14, Math.min(46, 24 * scale));
   return L.divIcon({
     className: '',
-    html: `<div class="map-dot ${isHotel ? 'dot-hotel' : 'dot-spot'}" style="width:24px;height:24px;transform-origin:center;"></div>`,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-    popupAnchor: [0, -18]
+    html: `<div class="map-dot ${isHotel ? 'dot-hotel' : 'dot-spot'}" style="width:${s}px;height:${s}px;"></div>`,
+    iconSize: [s, s],
+    iconAnchor: [s/2, s/2],
+    popupAnchor: [0, -(s/2 + 6)]
   });
 }
-function updateDotScale() {
-  const zoom = map.getZoom();
-  const scale = Math.pow(2, (zoom - 13) / 2.5);
-  allMarkers.forEach(item => {
-    const el = item.marker.getElement();
-    if (el) {
-      const dot = el.querySelector('.map-dot');
-      if (dot) dot.style.transform = `scale(${scale})`;
-    }
+function updateAllDots() {
+  requestAnimationFrame(() => {
+    allMarkers.forEach(item => item.marker.setIcon(mkDot(item.isHotel)));
   });
 }
-map.on('zoomend', updateDotScale);
-map.on('moveend', updateDotScale);
+map.on('zoomend', updateAllDots);
 
 spots.forEach(s => {
   const m = L.marker(s.coords, { icon:mkDot(false) }).addTo(map);
