@@ -663,12 +663,7 @@ const hotels = [
 
 // ═══════════════ MAP ═══════════════
 const map = L.map('hero-map', { zoomControl:false, attributionControl:false, dragging: !L.Browser.mobile, scrollWheelZoom:false, touchZoom:true, doubleClickZoom:true, keyboard:true });
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom:19, maxNativeZoom:18, subdomains:'abcd', keepBuffer:0 })
-.on('tileerror', function(e) {
-  const alt = e.tile.src.replace(/\/[a-d]\.basemaps/, '/c.basemaps');
-  if (alt !== e.tile.src) e.tile.src = alt;
-}).addTo(map);
-map.setView([28.193, 112.956], 13);
+L.tileLayer('https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
 setTimeout(() => map.invalidateSize(), 100);
 setTimeout(() => map.invalidateSize(), 500);
 
